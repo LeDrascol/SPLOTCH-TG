@@ -1,4 +1,3 @@
-// UNIMPLEMENTED QUIRK!
 /datum/quirk/cum_sniff
 	name = "Genital Sniffer"
 	desc = "You can accurately identify what reagents other people's genitals produce."

@@ -1,4 +1,3 @@
-// REMOVED QUIRK - Disabled in favor of new NIFSoft method
 /datum/quirk/body_morpher
 	name = "Body Morpher"
 	desc = "You have the ability to morph and shift your body, like a slimeperson can."
