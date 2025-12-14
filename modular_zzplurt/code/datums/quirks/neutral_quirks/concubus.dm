@@ -4,7 +4,7 @@
 
 /datum/quirk/concubus
 	name = "Concubus"
-	desc = "Your seducer-like metabolism can only be sated by milk or semen. This also makes you slightly hungrier."
+	desc = "Your seducer-like metabolism has adapted to digest both breast milk and semen into nourishment. This has a side effect of making you slightly hungrier."
 	value = 0
 	gain_text = span_purple("You feel a craving for certain bodily fluids.")
 	lose_text = span_purple("Your bodily fluid cravings fade back away.")
@@ -28,14 +28,14 @@
 	// Increase hunger rate
 	quirk_mob.physiology.hunger_mod *= QUIRK_HUNGER_CONCUBUS
 
-	/* REWORK
+	/*
 	// Prevent consuming normal food
 	ADD_TRAIT(quirk_mob, TRAIT_LIVERLESS_METABOLISM, TRAIT_CONCUBUS)
-	//ADD_TRAIT(quirk_mob,TRAIT_NOTHIRST,QUIRK_TRAIT) // Thirst not yet implemented
+	ADD_TRAIT(quirk_mob,TRAIT_NOTHIRST,QUIRK_TRAIT)
+	*/
 
 	// Register special reagent interactions
 	RegisterSignals(quirk_holder, list(COMSIG_REAGENT_ADD_CUM, COMSIG_REAGENT_ADD_BREASTMILK), PROC_REF(handle_fluids))
-	*/
 
 /datum/quirk/concubus/remove()
 	// Define quirk holder
@@ -48,28 +48,23 @@
 	// Revert hunger rate change
 	quirk_mob.physiology.hunger_mod /= QUIRK_HUNGER_CONCUBUS
 
-	/* REWORK
+	/*
 	// Revert quirk traits
 	REMOVE_TRAIT(quirk_mob, TRAIT_LIVERLESS_METABOLISM, TRAIT_CONCUBUS)
-	//REMOVE_TRAIT(quirk_mob,TRAIT_NOTHIRST,QUIRK_TRAIT) // Thirst not yet implemented
+	REMOVE_TRAIT(quirk_mob,TRAIT_NOTHIRST,QUIRK_TRAIT)
+	*/
 
 	// Unregister special reagent interactions
 	UnregisterSignal(quirk_holder, COMSIG_REAGENT_ADD_CUM)
 	UnregisterSignal(quirk_holder, COMSIG_REAGENT_ADD_BREASTMILK)
-	*/
 
-/* REWORK
-/// Proc to handle reagent interactions with bodily fluids
+
+/// Proc to handle gaining nutrition from compatible bodily fluids
 /datum/quirk/concubus/proc/handle_fluids(mob/living/target, datum/reagent/handled_reagent, amount)
 	SIGNAL_HANDLER
 
-	// Check for valid reagent
-	if(ispath(handled_reagent))
-		// Remove reagent
-		quirk_holder.reagents.remove_reagent(handled_reagent, amount)
-
 	// Add Notriment
+	// This increases the target's nutrition
 	quirk_holder.reagents.add_reagent(/datum/reagent/consumable/notriment, amount)
-*/
 
 #undef QUIRK_HUNGER_CONCUBUS
