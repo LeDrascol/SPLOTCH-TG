@@ -74,6 +74,18 @@
 	/// Deity name to use in Dream messages
 	var/pref_deity
 
+// Check if this quirk is valid for the species
+/datum/quirk/choke_slut/is_species_appropriate(datum/species/mob_species)
+	// Define species traits
+	var/datum/species_traits = GLOB.species_prototypes[mob_species].inherent_traits
+
+	// Check for no hunger
+	if(TRAIT_NOBLOOD in species_traits)
+		return FALSE
+
+	// Return default
+	return ..()
+
 /datum/quirk/cursed_blood/add(client/client_source)
 	// Register reagent interactions
 	RegisterSignal(quirk_holder, COMSIG_REAGENT_EXPOSE_HOLYWATER, PROC_REF(expose_holywater))

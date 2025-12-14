@@ -12,6 +12,17 @@
 		/obj/item/reagent_containers/cup/glass/waterbottle = 1
 	)
 
+// Check if this quirk is valid for the species
+/datum/quirk/thirsty/is_species_appropriate(datum/species/mob_species)
+	// Define species traits
+	var/datum/species_traits = GLOB.species_prototypes[mob_species].inherent_traits
+
+	// Check for no thirst
+	if(TRAIT_NOTHIRST in species_traits)
+		return FALSE
+
+	// Return default
+	return ..()
 
 /datum/quirk/thirsty/add(client/client_source)
 	// Define quirk mob

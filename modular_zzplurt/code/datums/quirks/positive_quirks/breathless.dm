@@ -9,3 +9,15 @@
 	hardcore_value = -4
 	icon = FA_ICON_BAN_SMOKING
 	hidden_quirk = TRUE
+
+// Check if this quirk is valid for the species
+/datum/quirk/breathless/is_species_appropriate(datum/species/mob_species)
+	// Define species traits
+	var/datum/species_traits = GLOB.species_prototypes[mob_species].inherent_traits
+
+	// Check for no hunger
+	if(TRAIT_NOBREATH in species_traits)
+		return FALSE
+
+	// Return default
+	return ..()

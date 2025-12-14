@@ -11,3 +11,15 @@
 	mail_goodies = list (
 		/obj/item/reagent_containers/hypospray/medipen = 1 // Fix your oxy loss
 	)
+
+// Check if this quirk is valid for the species
+/datum/quirk/choke_slut/is_species_appropriate(datum/species/mob_species)
+	// Define species traits
+	var/datum/species_traits = GLOB.species_prototypes[mob_species].inherent_traits
+
+	// Check for no hunger
+	if(TRAIT_NOBREATH in species_traits)
+		return FALSE
+
+	// Return default
+	return ..()
