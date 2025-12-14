@@ -57,6 +57,13 @@
 /// Duration of the dream status effect when splashed
 #define CURSEDBLOOD_DREAM_DURATION_SPLASH 10 SECONDS
 
+/// Hell Water: How much disgust adjustment per process
+#define CURSEDBLOOD_DISGUST_AMT -2
+/// Hell Water: How much thirst reduction per process
+#define CURSEDBLOOD_THIRST_AMT 6
+/// Hell Water: How much nutrition gain per process
+#define CURSEDBLOOD_NUTRITION_AMT 6
+
 /datum/quirk/cursed_blood
 	name = "Cursed Blood"
 	desc = "Your lineage is afflicted with a blood-born curse. Avoid coming into contact with Holy Water. Hell Water, on the other hand..."
@@ -150,11 +157,15 @@
 /datum/quirk/cursed_blood/proc/process_hellwater()
 	SIGNAL_HANDLER
 
+	// Add positive mood.
+	quirk_holder.add_mood_event("fav_food", /datum/mood_event/favorite_food)
+
 	// Reduce disgust, hunger, and thirst
 	// These effects should match Hallowed bonus for Holy Water
-	quirk_holder.adjust_disgust(-2)
-	quirk_holder.adjust_nutrition(6)
-	//quirk_holder.adjust_thirst(6)
+	// The effect is intended to be "magic" and bypass digestion
+	quirk_holder.adjust_disgust(CURSEDBLOOD_DISGUST_AMT)
+	quirk_holder.adjust_nutrition(CURSEDBLOOD_NUTRITION_AMT)
+	quirk_holder.adjust_thirst(CURSEDBLOOD_THIRST_AMT)
 
 // Status effect for Cursed Blood that applies Holy Water effects
 /datum/status_effect/quirk_cursed_blood // Necessary for linters
@@ -268,3 +279,6 @@
 #undef CURSEDBLOOD_DREAM_CHANCE_2
 #undef CURSEDBLOOD_DREAM_CHANCE_3
 #undef CURSEDBLOOD_DREAM_TIME_UNCONSCIOUS
+#undef CURSEDBLOOD_DISGUST_AMT
+#undef CURSEDBLOOD_THIRST_AMT
+#undef CURSEDBLOOD_NUTRITION_AMT

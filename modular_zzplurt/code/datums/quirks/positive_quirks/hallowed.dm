@@ -1,3 +1,10 @@
+/// Holy Water: How much disgust adjustment per process
+#define HALLOWED_DISGUST_AMT -2
+/// Holy Water: How much thirst reduction per process
+#define HALLOWED_THIRST_AMT 6
+/// Holy Water: How much nutrition gain per process
+#define HALLOWED_NUTRITION_AMT 6
+
 /datum/quirk/hallowed
 	name = "Hallowed"
 	desc = "You have been blessed by a higher power, or otherwise become a deacon imbued with holy energy. Your divine presence gives you the power of a chaplain, and drives away unholy magics!"
@@ -53,7 +60,7 @@
 	SIGNAL_HANDLER
 
 	// Alert user of holy water effect.
-	to_chat(quirk_holder, span_nicegreen("The holy water nourishes you!"))
+	to_chat(quirk_holder, span_nicegreen("A divine blessing flows through your body upon consuming the holy water!"))
 
 	// Add positive mood.
 	quirk_holder.add_mood_event("fav_food", /datum/mood_event/favorite_food)
@@ -62,11 +69,13 @@
 /datum/quirk/hallowed/proc/process_holywater()
 	SIGNAL_HANDLER
 
-	// Reduce disgust, hunger, and thirst
 	// These effects should be a foil to bloodfledge penalties
-	quirk_holder.adjust_disgust(-2)
-	quirk_holder.adjust_nutrition(6)
-	//quirk_holder.adjust_thirst(6)
+	// The effect is intended to be "magic" and bypass digestion
+
+	// Reduce disgust, hunger, and thirst
+	quirk_holder.adjust_disgust(HALLOWED_DISGUST_AMT)
+	quirk_holder.adjust_nutrition(HALLOWED_NUTRITION_AMT)
+	quirk_holder.adjust_thirst(HALLOWED_THIRST_AMT)
 
 // Examine text status effect
 /datum/status_effect/quirk_examine/hallowed
@@ -76,3 +85,6 @@
 /datum/status_effect/quirk_examine/hallowed/get_examine_text()
 	return span_notice("[owner.p_They()] radiate[owner.p_s()] divine power.")
 
+#undef HALLOWED_DISGUST_AMT
+#undef HALLOWED_THIRST_AMT
+#undef HALLOWED_NUTRITION_AMT
