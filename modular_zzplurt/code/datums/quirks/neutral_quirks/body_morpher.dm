@@ -10,12 +10,13 @@
 	mail_goodies = list (
 		/obj/item/toy/foamblade = 1 // Fake changeling
 	)
+
 /datum/quirk/body_morpher/add(client/client_source)
 	// Define quirk mob
 	var/mob/living/carbon/human/quirk_mob = quirk_holder
 
 	// Add quirk ability action datum
-	var/datum/action/innate/alter_form/quirk_action = new
+	var/datum/action/innate/alter_form/unrestricted/quirk_action = new
 	quirk_action.Grant(quirk_mob)
 
 /datum/quirk/body_morpher/remove()
@@ -26,5 +27,5 @@
 		return
 
 	// Remove quirk ability action datum
-	var/datum/action/innate/alter_form/quirk_action = locate() in quirk_mob.actions
+	var/datum/action/innate/alter_form/unrestricted/quirk_action = locate() in quirk_mob.actions
 	quirk_action.Remove(quirk_mob)
