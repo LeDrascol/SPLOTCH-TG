@@ -89,6 +89,14 @@ GLOBAL_LIST_INIT_TYPED(quirk_blacklist, /list/datum/quirk, list(
 	list(/datum/quirk/bad_touch, /datum/quirk/headpat_slut),
 	list(/datum/quirk/bad_touch, /datum/quirk/excitable),
 
+	// Undead are currently immune to hunger and thirst
+	list(/datum/quirk/undead, /datum/quirk/hungry),
+	list(/datum/quirk/undead, /datum/quirk/thirsty),
+	list(/datum/quirk/undead, /datum/quirk/concubus),
+	list(/datum/quirk/undead, /datum/quirk/cloth_eater),
+	list(/datum/quirk/undead, /datum/quirk/strong_stomach),
+	list(/datum/quirk/undead, /datum/quirk/voracious),
+
 	// Addict quirks fail if the mob has TRAIT_LIVERLESS_METABOLISM
 	// Any quirk that gives this trait should be blacklisted
 	list(/datum/quirk/item_quirk/addict/alcoholic, /datum/quirk/item_quirk/bloodfledge),
