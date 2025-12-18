@@ -10,6 +10,7 @@
 	icon = FA_ICON_LEAF
 	mail_goodies = list (
 		// /datum/reagent/consumable/ethanol/panty_dropper = 1 // Not yet implemented
+		/obj/item/implantcase/disrobe = 1
 	)
 	var/is_nude
 

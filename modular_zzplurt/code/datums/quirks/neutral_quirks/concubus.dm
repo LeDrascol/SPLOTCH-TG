@@ -13,7 +13,7 @@
 	icon = FA_ICON_GLASS_CHEERS
 	erp_quirk = TRUE
 	mail_goodies = list (
-		/datum/glass_style/drinking_glass/cum = 1,
+		/obj/item/reagent_containers/cup/soda_cans/carbonatedcum = 1,
 		/obj/item/reagent_containers/condiment/milk = 1
 	)
 
