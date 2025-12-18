@@ -15,22 +15,26 @@
 
 /datum/quirk/nudist/add(client/client_source)
 	// Register signal handlers
-	RegisterSignals(quirk_holder, list(COMSIG_MOB_EQUIPPED_ITEM, COMSIG_MOB_UNEQUIPPED_ITEM), PROC_REF(check_outfit))
+	RegisterSignals(quirk_holder, list(COMSIG_MOB_EQUIPPED_ITEM, COMSIG_MOB_UNEQUIPPED_ITEM, COMSIG_CHANGELING_TRANSFORM), PROC_REF(check_outfit))
 
 /datum/quirk/nudist/remove()
 	// Remove status effect
 	quirk_holder.remove_status_effect(/datum/status_effect/quirk_examine/nudist)
 
+	// Remove mood events
+	quirk_holder.clear_mood_event(QMOOD_NUDIST)
+
 	// Unregister signals
 	UnregisterSignal(quirk_holder, list(
 		COMSIG_MOB_EQUIPPED_ITEM,
-		COMSIG_MOB_UNEQUIPPED_ITEM
+		COMSIG_MOB_UNEQUIPPED_ITEM,
+		COMSIG_CHANGELING_TRANSFORM
 		)
 	)
 
 /datum/quirk/nudist/post_add()
 	// Evaluate outfit
-	check_outfit()
+	check_outfit(FALSE)
 
 /* Replaced by NIFSoft!
 /datum/quirk/nudist/add_unique(client/client_source)
@@ -43,14 +47,29 @@
 	quirk_implant.implant(quirk_holder, null, TRUE, TRUE)
 */
 
-/datum/quirk/nudist/proc/check_outfit()
+/**
+ * Nudist outfit checking
+ *
+ * Checks if the GROIN and CHEST are both exposed.
+ * When failing, apply a negative mood and examine text.
+ * Use variable ignore_redundant to bypass redundant applications.
+ */
+/datum/quirk/nudist/proc/check_outfit(ignore_redundant = TRUE)
 	SIGNAL_HANDLER
 
 	// Define quirk mob
 	var/mob/living/carbon/human/quirk_mob = quirk_holder
 
+	// Check if quirk mob exists
+	if(!istype(quirk_mob))
+		return
+
 	// Check if torso is uncovered
 	if(quirk_mob.is_body_part_exposed(GROIN|CHEST))
+		// Check if already set
+		if(is_nude && ignore_redundant)
+			return
+
 		// Send positive mood event
 		quirk_mob.add_mood_event(QMOOD_NUDIST, /datum/mood_event/nudist_positive)
 
@@ -60,10 +79,6 @@
 		// Apply positive status effect
 		quirk_holder.apply_status_effect(/datum/status_effect/quirk_examine/nudist/positive)
 
-		// Check if already set
-		if(is_nude)
-			return
-
 		// Alert user in chat
 		to_chat(quirk_mob, span_nicegreen("You begin to feel better without the restraint of clothing!"))
 
@@ -72,6 +87,10 @@
 
 	// Torso is covered
 	else
+		// Check if already set
+		if(!is_nude && ignore_redundant)
+			return
+
 		// Send negative mood event
 		quirk_mob.add_mood_event(QMOOD_NUDIST, /datum/mood_event/nudist_negative)
 
@@ -80,10 +99,6 @@
 
 		// Apply negative status effect
 		quirk_holder.apply_status_effect(/datum/status_effect/quirk_examine/nudist/negative)
-
-		// Check if already set
-		if(!is_nude)
-			return
 
 		// Alert user in chat
 		to_chat(quirk_mob, span_warning("The clothes feel wrong on your body..."))
@@ -104,6 +119,16 @@
 // Examine text status effect
 /datum/status_effect/quirk_examine/nudist
 	id = QUIRK_EXAMINE_NUDIST
+
+// Proc for adding the status effect
+/datum/status_effect/quirk_examine/nudist/on_apply()
+	// Check if holder is a changeling
+	if(IS_CHANGELING(owner))
+		// Remove status effect
+		return FALSE
+
+	// Return original
+	return ..()
 
 // Set effect examine text - Positive
 /datum/status_effect/quirk_examine/nudist/positive/get_examine_text()
