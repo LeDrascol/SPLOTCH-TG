@@ -1,9 +1,11 @@
-// Edit to update description
+// This quirk was removed by upstream. Use the "aloof" personality instead.
 /datum/quirk/bad_touch
+	name = "Bad Touch"
 	medical_record_text = "Patient demonstrates a dislike for physical affection."
 	icon = FA_ICON_SAD_CRY
 	desc = "You don't like physical affection, and have a slight chance of retaliating against others who attempt it."
 	value = 0
+	hidden_quirk = TRUE
 
 /datum/quirk/bad_touch/add(client/client_source)
 	// Add status effect
