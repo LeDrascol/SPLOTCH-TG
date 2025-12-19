@@ -11,6 +11,9 @@
 #define COSGLOW_LAMP_POWER_MAX 1.5
 #define COSGLOW_LAMP_POWER_DEFAULT 1
 #define COSGLOW_LAMP_COLOR COLOR_WHITE
+#define COSGLOW_NAME_LIGHT "Light"
+#define COSGLOW_NAME_REGULAR "Regular"
+#define COSGLOW_NAME_BOLD "Bold"
 
 // You might be an undercover agent.
 /datum/quirk/cosglow
@@ -25,12 +28,45 @@
 	mail_goodies = list (
 		/obj/item/flashlight/glowstick = 1
 	)
+
 /datum/quirk/cosglow/add(client/client_source)
 	// Define quirk holder mob
 	var/mob/living/carbon/human/quirk_mob = quirk_holder
 
-	// Add glow control action
+	// Create glow control action
 	var/datum/action/cosglow/update_glow/quirk_action = new
+
+	// Define holder client
+	var/client/holder_client = quirk_holder.client
+
+	// Check if client has prefs
+	if(istype(holder_client?.prefs))
+		// Define color preference
+		var/glow_pref = holder_client?.prefs?.read_preference(/datum/preference/color/quirk_cosglow_color)
+
+		// Check if color preference was valid
+		if(!isnull(glow_pref))
+			// Set new glow color
+			quirk_action.glow_color = glow_pref
+
+		// Define thickness preference
+		var/thick_pref = holder_client?.prefs?.read_preference(/datum/preference/choiced/quirk_cosglow_thickness)
+
+		// Check if color preference was valid
+		if(!isnull(thick_pref))
+			// Set based on input
+			switch(thick_pref)
+				if (COSGLOW_NAME_LIGHT)
+					quirk_action.glow_thickness = COSGLOW_THICKNESS_MIN
+					quirk_action.light_obj_power = COSGLOW_LAMP_POWER_MIN
+				if (COSGLOW_NAME_REGULAR)
+					quirk_action.glow_thickness = COSGLOW_THICKNESS_DEFAULT
+					quirk_action.light_obj_power = COSGLOW_LAMP_POWER_DEFAULT
+				if (COSGLOW_NAME_BOLD)
+					quirk_action.glow_thickness = COSGLOW_THICKNESS_MAX
+					quirk_action.light_obj_power = COSGLOW_LAMP_POWER_MAX
+
+	// Grant glow control action
 	quirk_action.Grant(quirk_mob)
 
 /datum/quirk/cosglow/remove()
@@ -163,17 +199,17 @@
 	*/
 
 	// Ask user for thickness input
-	switch(tgui_alert(action_mob, message = "How thick is your glow outline?", buttons = list("Light", "Regular", "Bold")))
+	switch(tgui_alert(action_mob, message = "How thick is your glow outline?", buttons = list(COSGLOW_NAME_LIGHT, COSGLOW_NAME_LIGHT, COSGLOW_NAME_LIGHT)))
 		// Set based on input
-		if ("Light")
+		if (COSGLOW_NAME_LIGHT)
 			glow_thickness = COSGLOW_THICKNESS_MIN
 			light_obj_power = COSGLOW_LAMP_POWER_MIN
 
-		if ("Regular")
+		if (COSGLOW_NAME_LIGHT)
 			glow_thickness = COSGLOW_THICKNESS_DEFAULT
 			light_obj_power = COSGLOW_LAMP_POWER_DEFAULT
 
-		if ("Bold")
+		if (COSGLOW_NAME_LIGHT)
 			glow_thickness = COSGLOW_THICKNESS_MAX
 			light_obj_power = COSGLOW_LAMP_POWER_MAX
 
@@ -210,6 +246,45 @@
 	// Update status effect light range
 	glow_effect?.cosglow_light_obj?.set_light_power(light_obj_power)
 
+// Quirk preference data
+/datum/quirk_constant_data/quirk_cosglow_color
+	associated_typepath = /datum/quirk/cosglow
+	customization_options = list(
+			/datum/preference/color/quirk_cosglow_color,
+			/datum/preference/choiced/quirk_cosglow_thickness
+		)
+
+//
+// Preference data for glow color
+//
+/datum/preference/color/quirk_cosglow_color
+	category = PREFERENCE_CATEGORY_MANUALLY_RENDERED
+	savefile_key = "quirk_cosglow_color"
+	savefile_identifier = PREFERENCE_CHARACTER
+
+/datum/preference/color/quirk_cosglow_color/apply_to_human(mob/living/carbon/human/target, value)
+	return
+
+/datum/preference/color/quirk_cosglow_color/create_default_value()
+	return "#14FF67"
+
+//
+// Preference data for glow thickness
+//
+/datum/preference/choiced/quirk_cosglow_thickness
+	category = PREFERENCE_CATEGORY_MANUALLY_RENDERED
+	savefile_key = "quirk_cosglow_thickness"
+	savefile_identifier = PREFERENCE_CHARACTER
+
+/datum/preference/choiced/quirk_cosglow_thickness/apply_to_human(mob/living/carbon/human/target, value)
+	return
+
+/datum/preference/choiced/quirk_cosglow_thickness/init_possible_values()
+	return list(COSGLOW_NAME_LIGHT, COSGLOW_NAME_REGULAR, COSGLOW_NAME_BOLD)
+
+/datum/preference/choiced/quirk_cosglow_thickness/create_default_value()
+	return COSGLOW_NAME_REGULAR
+
 #undef COSGLOW_OPACITY_MIN
 #undef COSGLOW_OPACITY_MAX
 #undef COSGLOW_OPACITY_DEFAULT
@@ -223,3 +298,6 @@
 #undef COSGLOW_LAMP_POWER_MAX
 #undef COSGLOW_LAMP_POWER_DEFAULT
 #undef COSGLOW_LAMP_COLOR
+#undef COSGLOW_NAME_LIGHT
+#undef COSGLOW_NAME_REGULAR
+#undef COSGLOW_NAME_BOLD
